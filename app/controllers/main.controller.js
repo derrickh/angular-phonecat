@@ -4,6 +4,7 @@ angular.module('brackCrackApp')
     .controller('MainController', function ($scope, $firebaseAuth, $timeout, $location, FIREBASE_URL) {
         $scope.currentUser = null;
         $scope.doneLoading = false;
+        $scope.activeTab = $location.path();
 
         $scope.setCurrentUser = function (user) {
             $scope.currentUser = user;
@@ -32,8 +33,12 @@ angular.module('brackCrackApp')
             console.log(JSON.stringify($scope.currentUser));
         }
 
-        $scope.switchBool = function (messageId) {
-            $scope[messageId] = !$scope[messageId];
+        $scope.isActiveTab = function (tabName) {
+            return $scope.activeTab == tabName;
+        }
+
+        $scope.navBarClick = function (activeTab) {
+            $scope.activeTab = activeTab;
         }
 
         $scope.emailLogin = function (email, pass) {
@@ -100,6 +105,7 @@ angular.module('brackCrackApp')
         $timeout(function () {
             $scope.doneLoading = true;
             if ($scope.currentUser == null) {
+                $scope.activeTab = '';
                 $location.path("/signIn");
             }
         }, 2000);
