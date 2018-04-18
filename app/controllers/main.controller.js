@@ -15,18 +15,22 @@ angular.module('brackCrackApp')
         });
 
         $scope.showError = function (error) {
-            $scope.showErrorAlert = true;
-            $scope.errorTextAlert = error.code + ": " + error.message;
+            $scope.errorVisible = true;
+            $scope.errorText = error.code + ": " + error.message;
         }
 
         $scope.showInfo = function (message) {
-            $scope.showInfo = true;
+            $scope.infoVisible = true;
             $scope.infoText = message;
         }
 
         $scope.showSuccess = function (message) {
-            $scope.showSuccess = true;
+            $scope.successVisible = true;
             $scope.successText = message;
+        }
+
+        $scope.switchBool = function (alertName) {
+            $scope[alertName] = !$scope[alertName];
         }
 
         $scope.refreshUser = function () {
@@ -45,6 +49,8 @@ angular.module('brackCrackApp')
             firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
                 $scope.showError(error);
             });
+
+            $location.path("/home");
         }
 
         $scope.googleLogin = function () {
@@ -52,6 +58,7 @@ angular.module('brackCrackApp')
             firebase.auth().signInWithPopup(provider).then(function (result) {
                 $scope.setCurrentUser(result.user);
                 $scope.apiToken = result.credential.accessToken;
+                $location.path("/home");
             }).catch(function (error) {
                 $scope.showError(error);
             });
@@ -62,6 +69,7 @@ angular.module('brackCrackApp')
             firebase.auth().signInWithPopup(provider).then(function (result) {
                 $scope.setCurrentUser(result.user);
                 $scope.apiToken = result.credential.accessToken;
+                $location.path("/home");
             }).catch(function (error) {
                 $scope.showError(error);
             });
@@ -72,6 +80,7 @@ angular.module('brackCrackApp')
             firebase.auth().signInWithPopup(provider).then(function (result) {
                 $scope.setCurrentUser(result.user);
                 $scope.apiToken = result.credential.accessToken;
+                $location.path("/home");
             }).catch(function (error) {
                 $scope.showError(error);
             });
@@ -100,6 +109,7 @@ angular.module('brackCrackApp')
             firebase.auth().createUserWithEmailAndPassword(email, password).catch(function (error) {
                 $scope.showError(error);
             });
+            $location.path("/home");
         }
 
         $timeout(function () {
@@ -108,5 +118,6 @@ angular.module('brackCrackApp')
                 $scope.activeTab = '';
                 $location.path("/signIn");
             }
+            $("#body").css("overflow", "scroll");
         }, 2000);
     });

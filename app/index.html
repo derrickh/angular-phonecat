@@ -22,6 +22,7 @@
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
 
     <script src="js/brackets.min.js"></script>
+    <!--<script src="js/brackets.min.js"></script>-->
 
     <script src="app.js"></script>
     <script src="services/data.service.js"></script>
@@ -35,6 +36,7 @@
     <script src="controllers/search.controller.js"></script>
     <script src="controllers/sign-in.controller.js"></script>
     <script src="controllers/sign-up.controller.js"></script>
+    <script src="controllers/create.controller.js"></script>
 
     <script src="bower_components/firebase/firebase.js"></script>
     <script src="bower_components/firebase/firebase-app.js"></script>
@@ -58,7 +60,7 @@
     </script>
 </head>
 
-<body ng-controller="MainController">
+<body ng-controller="MainController" id="body">
     <div ng-show="!doneLoading">
         <div ng-include src="'partials/landing-page.partial.html'"></div>
     </div>

@@ -1,2 +1,32 @@
-<p>Showing bracket list for: {{user.uid}}</p>
-<div class="brackets"></div>
+<div class="well text-center" ng-show="isOwner">
+    <a type="button" class="btn btn-primary" href="#/bracket" ng-click="setActiveBracket('new')">Fill Out Bracket</a>
+</div>
+
+<div class="well text-center" ng-show="!isOwner">
+    <a type="button" class="btn btn-primary" href="#/bracket" ng-click="setActiveBracket('new')" ng-show="currentUser">Copy Bracket</a>
+    <a type="button" class="btn btn-primary" href="#/bracket" ng-click="setActiveBracket('new')">Print</a>
+    <a type="button" class="btn btn-primary" href="#/bracket" ng-click="setActiveBracket('new')">Share</a>
+</div>
+
+<div class="container" style="vertical-align:center">
+    <div class="row">
+        <div ng-repeat="round in bracket.rounds">
+            <div class="col-xs-3">
+                <div class="well text-center" style="background-color:#337ab7; color: white; border-radius: 4px">
+                    <strong>Round {{ $index }}</strong>
+                </div>
+                <div ng-repeat="match in round.matchups">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="team in match.teams">
+                                <div class="team" style="border-bottom:1px solid black" ng-class-even="'evenTeam'">
+                                    <button class="btn btn-primary">{{team.id}} : {{team.name}}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

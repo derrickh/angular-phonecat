@@ -99,3 +99,12 @@ h1 {
 #myProfile.a:hover {
     opacity: 0.7;
 }
+
+.team {
+    border-bottom: 1px solid black;
+    padding: 10px;
+}
+
+.evenTeam {
+    border-right: 1px solid black;
+}

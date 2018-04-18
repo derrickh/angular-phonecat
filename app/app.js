@@ -46,6 +46,15 @@ brackCrackApp.config(function ($routeProvider, $locationProvider) {
             templateUrl: 'views/loading.view.html',
             controller: 'MainController'
         })
+        .when('/bracket/:bracketId', {
+            template: function (params) {
+                return '<bracket bracket-id="' + params.bracketId + '"></bracket>';
+            }
+        })
+        .when('/create', {
+            templateUrl: 'views/create.view.html',
+            controller: 'CreateController'
+        })
         .otherwise({
             redirectTo: '/home'
         });

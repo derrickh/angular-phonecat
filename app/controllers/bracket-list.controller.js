@@ -1,28 +1,14 @@
 'use strict';
 
 angular.module('brackCrackApp')
-    .controller('BracketListController', ["$scope", "$filter", function ($scope, $filter) {
-        $scope.bracketList = [];
-
+    .controller('BracketListController', ["$scope", "$filter", "$location", "$firebase", "DataService", function ($scope, $filter, $location, $firebase, DataService) {
         $scope.actionClicked = false;
-
-        var x;
-        for (x = 0; x < 200; x++) {
-            $scope.bracketList.push({
-                id: x,
-                name: 'Brack' + x,
-                desc: x + 'Test Bracket',
-                category: 'Comedy',
-                format: '16x16',
-                createdBy: 'Derrick Hiestand',
-                createdOn: new Date('2018-4-10'),
-                public: false
-            });
-        }
+        $scope.bracketList = [];
 
         $scope.openBracket = function (row) {
             if (!$scope.actionClicked) {
-                alert('open bracket: ' + row.id);
+                $scope.activeBracket = row.id;
+                $location.path("/bracket/" + $scope.activeBracket);
             }
             $scope.actionClicked = false;
         }
@@ -41,4 +27,24 @@ angular.module('brackCrackApp')
             $scope.actionClicked = true;
             alert('delete bracket: ' + bracketId);
         }
-}]);
+
+        $scope.findBracket = function (bracketId) {
+            angular.forEach($scope.bracketList, function (value) {
+                if (value.id == bracketId) {
+                    return value;
+                }
+            });
+        }
+        
+        DataService.getBracketList()
+            .then(function (response) {
+                $scope.bracketList = response;
+            })
+            .catch(function (err) {
+                throw new Error(err);
+            })
+
+        $scope.createNewBracket = function () {
+            $location.path("/create");
+        }
+    }]);
