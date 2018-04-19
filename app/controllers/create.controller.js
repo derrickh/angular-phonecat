@@ -116,7 +116,7 @@ angular.module('brackCrackApp')
                 startingRound['10M'].top = seedWithTeams['9Seed'];
                 startingRound['10M'].bottom = seedWithTeams['8Seed'];
 
-                startingRound['11M'].top = seedWithTeams['5seed'];
+                startingRound['11M'].top = seedWithTeams['5Seed'];
                 startingRound['11M'].bottom = seedWithTeams['12Seed'];
 
                 startingRound['12M'].top = seedWithTeams['13Seed'];
