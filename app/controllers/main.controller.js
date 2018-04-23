@@ -16,7 +16,11 @@ angular.module('brackCrackApp')
 
         $scope.showError = function (error) {
             $scope.errorVisible = true;
-            $scope.errorText = error.code + ": " + error.message;
+            if (error.code) {
+                $scope.errorText = error.code + ": " + error.message;
+            } else {
+                $scope.errorText = error.message;
+            }
         }
 
         $scope.showInfo = function (message) {

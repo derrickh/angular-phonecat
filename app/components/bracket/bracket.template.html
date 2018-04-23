@@ -1,46 +1,71 @@
-<div class="text-center" ng-show="!isOwner">
-    <a type="button" class="btn btn-primary" href="#/bracket" ng-click="setActiveBracket('new')" ng-show="currentUser">Copy Bracket</a>
-    <a type="button" class="btn btn-primary" href="#/bracket" ng-click="setActiveBracket('new')">Print</a>
-    <a type="button" class="btn btn-primary" href="#/bracket" ng-click="setActiveBracket('new')">Share</a>
-</div>
+<article id="container" ng-show="bracket.rounds">
 
-<div id="bracketContainer" class="container">
-    <div class="row">
-        <h4>And the winner is....</h4>
-    </div>
-    <div class="row">
-        <div ng-repeat="round in getRounds(bracket.rounds)">
-            <div ng-if="!$last">
-                <div class="col-md-3">
-                    <div class="well text-center" style="background-color:#337ab7; color: white; border-radius: 4px">
-                        <h4>ROUND {{ $index + 1 }}</h4>
-                    </div>
-                    <ul>
-                        <li ng-repeat="matchUp in getMatchUps(round)">
-                            <span ng-show="!$parent.$last">
-                                <div class="matchUpBox">
-                                    <div class="top">
-                                        <div ng-if="!matchUp.top">
-                                            TBD
-                                        </div>
-                                        <div ng-if="matchUp.top">
-                                            {{ matchUp.top.name }}
-                                        </div>
-                                    </div>
-                                    <div class="bottom">
-                                        <div ng-if="!matchUp.bottom">
-                                            TBD
-                                        </div>
-                                        <div ng-if="matchUp.bottom">
-                                            {{ matchUp.bottom.name }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </span>
-                        </li>
-                    </ul>
-                </div>
+    <div ng-show="isRoundVisible(4)">
+        <section id="roundOf16">
+            <div ng-repeat="(key, value) in bracket.rounds['round4']">
+                <div class="top" ng-click="teamClick(value.top, 2)">{{ value.top.name }}</div>
+                <div class="bottom" ng-click="teamClick(value.bottom, 2)">{{ value.bottom.name }}</div>
+            </div>
+        </section>
+
+        <div class="connecter">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+
+        <div class="line">
+            <div>
+            </div>
+            <div>
+            </div>
+            <div>
+            </div>
+            <div>
             </div>
         </div>
     </div>
-</div>
+
+    <div ng-show="isRoundVisible(3)">
+        <section id="quarterFinals">
+            <div ng-repeat="(key, value) in bracket.rounds['round3']">
+                <div class="top" ng-click="teamClick(value.top, 1)">{{ value.top.name }}</div>
+                <div class="bottom" ng-click="teamClick(value.bottom, 1)">{{ value.bottom.name }}</div>
+            </div>
+        </section>
+
+        <div class="connecter" id="conn2">
+            <div></div>
+            <div></div>
+        </div>
+
+        <div class="line" id="line2">
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+    <section id="semiFinals">
+        <div ng-repeat="(key, value) in bracket.rounds['round2']">
+            <div class="top" ng-click="teamClick(value.top, 0)">{{ value.top.name }}</div>
+            <div class="bottom" ng-click="teamClick(value.bottom, 0)">{{ value.bottom.name }}</div>
+        </div>
+    </section>
+
+    <div class="connecter" id="conn3">
+        <div></div>
+    </div>
+
+    <div class="line" id="line3">
+        <div></div>
+    </div>
+
+    <section id="final">
+        <div ng-repeat="(key, value) in bracket.rounds['round1']">
+            <div class="top" ng-click="setChamp(value.top)">{{ value.top.name }}</div>
+            <div class="bottom" ng-click="setChamp(value.bottom)">{{ value.bottom.name }}</div>
+        </div>
+    </section>
+
+</article>

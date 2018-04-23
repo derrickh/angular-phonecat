@@ -1,28 +1,23 @@
 angular.module('brackCrackApp')
-    .controller('CreateController', function ($scope, $location, DataService) {
+    .controller('CreateController', ["$scope", "$location", "DataService", function ($scope, $location, DataService) {
+
         $scope.newBracket = {};
 
-        $scope.number = 16;
-        $scope.getNumber = function (num) {
-            return new Array(num);
-        }
-
-        $scope.add = function () {
-            $scope.newBracket.createdBy = $scope.currentUser.uid;
+        $scope.create = function () {
             var bracket = $scope.newBracket;
             if (!bracket.teamList) {
                 $scope.showError({
-                    message: 'List of seeds is not populated'
+                    message: 'List of seeds is not populated, populate it and try again'
                 });
+                return;
             }
 
             var valArray = bracket.teamList.split('\n');
 
             if (valArray.length != 4 && valArray.length != 8 && valArray.length != 16) {
                 $scope.showError({
-                    message: 'Something wrong with list after split: ' + bracket.teamList.length
+                    message: 'Make sure there is one seed per line and try again'
                 });
-
                 return;
             }
 
@@ -31,17 +26,15 @@ angular.module('brackCrackApp')
             }
 
             var seedCount = valArray.length;
-            DataService.getEmptyBracketRounds(seedCount)
+            DataService.getEmptyBracketRounds()
                 .then(function (rounds) {
-                    DataService.getSeedList(seedCount)
+                    DataService.getSeedList()
                         .then(function (seeds) {
                             $scope.populateAndSaveNewBracket(bracket, valArray, rounds, seeds);
                         })
                         .catch(function (err) {
                             console.log('error: ' + err);
-                            $scope.showError({
-                                message: 'Error with seed retrieval'
-                            });
+                            $scope.showError(err);
                         })
                 })
                 .catch(function (err) {
@@ -55,23 +48,26 @@ angular.module('brackCrackApp')
         $scope.populateAndSaveNewBracket = function (bracket, teams, rounds, seeds) {
             if (!rounds || rounds.length == 0) {
                 $scope.showError({
-                    message: 'Something went wrong with rounds retrieval'
+                    message: 'Something went wrong with round data retrieval'
                 });
                 return;
             }
 
             if (!seeds || seeds.length == 0) {
                 $scope.showError({
-                    message: 'Something went wrong with seeds retrieval'
+                    message: 'Something went wrong with seed id retrieval'
                 });
+                return;
             }
 
             var seedWithTeams = {};
 
             angular.forEach(teams, function (value, key) {
                 var seed = key + 1;
+                var seedData = seeds[seed + 'seed'];
                 var seedWithTeam = {
-                    seedId: seeds['seed' + seed],
+                    seedId: seedData.seedId,
+                    positionId: seedData.positionId,
                     id: seed,
                     name: value
                 };
@@ -79,68 +75,71 @@ angular.module('brackCrackApp')
             });
 
             bracket.rounds = {};
-            bracket.rounds.round1 = rounds['1Round'];
-            bracket.rounds.round2 = rounds['2Round'];
-            bracket.rounds.round3 = rounds['3Round'];
+            bracket.rounds.round1 = rounds['1round'];
+            bracket.rounds.champion = rounds.champion;
 
             if (bracket.format == "4") {
-                var startingRound = rounds['3Round'];
+                var startingRound = bracket.rounds.round2;
 
-                startingRound['3M'].top = seedWithTeams['1Seed'];
-                startingRound['3M'].bottom = seedWithTeams['4Seed'];
+                startingRound['A'].top = seedWithTeams['1Seed'];
+                startingRound['A'].bottom = seedWithTeams['4Seed'];
 
-                startingRound['4M'].top = seedWithTeams['3Seed'];
-                startingRound['4M'].bottom = seedWithTeams['2Seed'];
+                startingRound['B'].top = seedWithTeams['3Seed'];
+                startingRound['B'].bottom = seedWithTeams['2Seed'];
+
+                bracket.rounds.round2 = startingRound;
             } else if (bracket.format == "8") {
-                var startingRound = rounds['4Round'];
+                var startingRound = bracket.rounds.round3;
 
-                startingRound['5M'].top = seedWithTeams['1Seed'];
-                startingRound['5M'].bottom = seedWithTeams['8Seed'];
+                startingRound['A'].top = seedWithTeams['1Seed'];
+                startingRound['A'].bottom = seedWithTeams['8Seed'];
 
-                startingRound['6M'].top = seedWithTeams['3Seed'];
-                startingRound['6M'].bottom = seedWithTeams['6Seed'];
+                startingRound['B'].top = seedWithTeams['3Seed'];
+                startingRound['B'].bottom = seedWithTeams['6Seed'];
 
-                startingRound['7M'].top = seedWithTeams['4Seed'];
-                startingRound['7M'].bottom = seedWithTeams['5Seed'];
+                startingRound['C'].top = seedWithTeams['4Seed'];
+                startingRound['C'].bottom = seedWithTeams['5Seed'];
 
-                startingRound['8M'].top = seedWithTeams['2Seed'];
-                startingRound['8M'].bottom = seedWithTeams['7Seed'];
+                startingRound['C'].top = seedWithTeams['2Seed'];
+                startingRound['C'].bottom = seedWithTeams['7Seed'];
 
-                bracket.rounds.round4 = rounds['4Round'];
+                bracket.rounds.round2 = rounds['2round'];
+                bracket.rounds.round3 = startingRound;
             } else {
-                var startingRound = rounds['5Round'];
+                var startingRound = rounds['4round'];
 
-                startingRound['9M'].top = seedWithTeams['1Seed'];
-                startingRound['9M'].bottom = seedWithTeams['16Seed'];
+                startingRound['A'].top = seedWithTeams['1Seed'];
+                startingRound['A'].bottom = seedWithTeams['16Seed'];
 
-                startingRound['10M'].top = seedWithTeams['9Seed'];
-                startingRound['10M'].bottom = seedWithTeams['8Seed'];
+                startingRound['B'].top = seedWithTeams['9Seed'];
+                startingRound['B'].bottom = seedWithTeams['8Seed'];
 
-                startingRound['11M'].top = seedWithTeams['5Seed'];
-                startingRound['11M'].bottom = seedWithTeams['12Seed'];
+                startingRound['C'].top = seedWithTeams['5Seed'];
+                startingRound['C'].bottom = seedWithTeams['12Seed'];
 
-                startingRound['12M'].top = seedWithTeams['13Seed'];
-                startingRound['12M'].bottom = seedWithTeams['4Seed'];
+                startingRound['D'].top = seedWithTeams['13Seed'];
+                startingRound['D'].bottom = seedWithTeams['4Seed'];
 
-                startingRound['13M'].top = seedWithTeams['3Seed'];
-                startingRound['13M'].bottom = seedWithTeams['14Seed'];
+                startingRound['E'].top = seedWithTeams['3Seed'];
+                startingRound['E'].bottom = seedWithTeams['14Seed'];
 
-                startingRound['14M'].top = seedWithTeams['6Seed'];
-                startingRound['14M'].bottom = seedWithTeams['11Seed'];
+                startingRound['F'].top = seedWithTeams['6Seed'];
+                startingRound['F'].bottom = seedWithTeams['11Seed'];
 
-                startingRound['15M'].top = seedWithTeams['7Seed'];
-                startingRound['15M'].bottom = seedWithTeams['10Seed'];
+                startingRound['G'].top = seedWithTeams['7Seed'];
+                startingRound['G'].bottom = seedWithTeams['10Seed'];
 
-                startingRound['16M'].top = seedWithTeams['15Seed'];
-                startingRound['16M'].bottom = seedWithTeams['2Seed'];
+                startingRound['H'].top = seedWithTeams['15Seed'];
+                startingRound['H'].bottom = seedWithTeams['2Seed'];
 
-                bracket.rounds.round4 = rounds['4Round'];
-                bracket.rounds.round5 = rounds['5Round'];
+                bracket.rounds.round2 = rounds['2round'];
+                bracket.rounds.round3 = rounds['3round'];
+                bracket.rounds.round4 = startingRound;
             }
 
             bracket.teams = seedWithTeams;
 
-            DataService.addBracket(bracket)
+            DataService.createBracket(bracket)
                 .then(function (response) {
                     $location.path("/bracket/" + bracket.id);
                 })
@@ -167,4 +166,4 @@ angular.module('brackCrackApp')
 
             return array;
         }
-    });
+    }]);

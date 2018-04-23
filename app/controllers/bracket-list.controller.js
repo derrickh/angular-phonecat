@@ -2,30 +2,23 @@
 
 angular.module('brackCrackApp')
     .controller('BracketListController', ["$scope", "$filter", "$location", "$firebase", "DataService", function ($scope, $filter, $location, $firebase, DataService) {
-        $scope.actionClicked = false;
-        $scope.bracketList = [];
-
-        $scope.openBracket = function (row) {
+        $scope.openBracket = function (bracketId) {
             if (!$scope.actionClicked) {
-                $scope.activeBracket = row.id;
-                $location.path("/bracket/" + $scope.activeBracket);
+                $location.path("/bracket/" + bracketId);
             }
             $scope.actionClicked = false;
         }
 
-        $scope.shareBracket = function (bracketId) {
-            $scope.actionClicked = true;
-            alert('share bracket: ' + bracketId);
+        $scope.shareBracket = function (bracket) {
+            alert('share bracket: ' + bracket);
         }
 
-        $scope.printBracket = function (bracketId) {
-            $scope.actionClicked = true;
-            alert('print bracket: ' + bracketId);
+        $scope.printBracket = function (bracket) {
+            alert('print bracket: ' + bracket);
         }
 
-        $scope.deleteBracket = function (bracketId) {
-            $scope.actionClicked = true;
-            alert('delete bracket: ' + bracketId);
+        $scope.deleteBracket = function (bracket) {
+            $scope.bracketList.$remove(bracket);
         }
 
         $scope.findBracket = function (bracketId) {
@@ -35,7 +28,7 @@ angular.module('brackCrackApp')
                 }
             });
         }
-        
+
         DataService.getBracketList()
             .then(function (response) {
                 $scope.bracketList = response;
@@ -43,8 +36,4 @@ angular.module('brackCrackApp')
             .catch(function (err) {
                 throw new Error(err);
             })
-
-        $scope.createNewBracket = function () {
-            $location.path("/create");
-        }
     }]);
